@@ -1,0 +1,1387 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexora | Find your next film</title>
+    <style>
+      :root {
+        --paper: #f1f5ef;
+        --surface: #ffffff;
+        --ink: #192a24;
+        --muted: #66736c;
+        --line: #d9e1d9;
+        --coral: #ed684b;
+        --lime: #d6f06a;
+        --forest: #244638;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "DM Sans", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 20px max(24px, calc((100vw - 1240px) / 2));
+        background: var(--paper);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--ink);
+        font-size: 21px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border-radius: 9px;
+        background: var(--coral);
+        color: white;
+        font-size: 16px;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+      }
+
+      .header-link {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .api-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 11px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #67a87a;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+        align-items: center;
+        gap: 48px;
+        max-width: 1240px;
+        min-height: 490px;
+        margin: 0 auto;
+        padding: 56px 24px 62px;
+        overflow: hidden;
+      }
+
+      .hero-content {
+        max-width: 610px;
+      }
+
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 19px;
+        color: var(--forest);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 25px;
+        height: 2px;
+        background: var(--coral);
+        content: "";
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 590px;
+        font-family: "DM Serif Display", Georgia, serif;
+        font-size: 68px;
+        font-weight: 400;
+        line-height: 0.99;
+      }
+
+      .hero-copy {
+        max-width: 480px;
+        margin: 17px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .search-box {
+        display: flex;
+        gap: 8px;
+        max-width: 590px;
+        margin-top: 26px;
+        padding: 6px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: 0 8px 25px rgba(25, 42, 36, 0.06);
+      }
+
+      .search-box input {
+        flex: 1;
+        min-width: 0;
+        padding: 13px 14px;
+        color: var(--ink);
+        background: transparent;
+        border: 0;
+        outline: none;
+      }
+
+      .search-box input::placeholder {
+        color: #89958e;
+      }
+
+      .primary-button {
+        min-height: 48px;
+        padding: 0 20px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--coral);
+        color: white;
+        font-size: 13px;
+        font-weight: 800;
+        transition:
+          background 160ms ease,
+          transform 160ms ease;
+      }
+
+      .primary-button:hover {
+        background: #d95338;
+        transform: translateY(-1px);
+      }
+
+      .example {
+        margin-top: 11px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .hero-art {
+        position: relative;
+        min-height: 340px;
+        isolation: isolate;
+      }
+
+      .hero-art::before {
+        position: absolute;
+        z-index: -1;
+        top: 30px;
+        right: 4px;
+        width: 79%;
+        height: 83%;
+        border-radius: 46% 46% 12px 12px;
+        background: var(--lime);
+        content: "";
+        transform: rotate(5deg);
+      }
+
+      .feature-poster {
+        position: absolute;
+        top: 5px;
+        right: 16%;
+        width: 54%;
+        height: 320px;
+        object-fit: cover;
+        border: 7px solid var(--paper);
+        border-radius: 5px;
+        box-shadow: 0 22px 44px rgba(25, 42, 36, 0.2);
+        transform: rotate(-4deg);
+      }
+
+      .side-poster {
+        position: absolute;
+        right: 1%;
+        bottom: 0;
+        width: 33%;
+        height: 195px;
+        object-fit: cover;
+        border: 6px solid var(--paper);
+        border-radius: 5px;
+        box-shadow: 0 16px 35px rgba(25, 42, 36, 0.18);
+        transform: rotate(7deg);
+      }
+
+      .art-note {
+        position: absolute;
+        bottom: 6px;
+        left: 0;
+        max-width: 160px;
+        padding: 13px 15px;
+        background: var(--forest);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.5;
+        transform: rotate(-3deg);
+      }
+
+      main {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 24px 72px;
+      }
+
+      .section {
+        margin-top: 20px;
+        padding-top: 31px;
+        border-top: 1px solid var(--line);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        margin: 0;
+        font-family: "DM Serif Display", Georgia, serif;
+        font-size: 32px;
+        font-weight: 400;
+      }
+
+      .section-subtitle {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .filter-button {
+        padding: 9px 14px;
+        color: var(--muted);
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        transition:
+          color 150ms ease,
+          background 150ms ease,
+          border-color 150ms ease;
+      }
+
+      .filter-button.active {
+        color: white;
+        background: var(--forest);
+        border-color: var(--forest);
+      }
+
+      .movie-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: 24px 16px;
+      }
+
+      .movie-card {
+        position: relative;
+        overflow: hidden;
+        min-width: 0;
+        background: transparent;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: transform 180ms ease;
+      }
+
+      .movie-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .poster-wrap {
+        position: relative;
+        aspect-ratio: 2 / 3;
+        overflow: hidden;
+        background: #dce3dd;
+        border-radius: 3px;
+        box-shadow: 0 8px 20px rgba(25, 42, 36, 0.1);
+      }
+
+      .poster {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .poster-overlay {
+        position: absolute;
+        inset: auto 0 0;
+        padding: 46px 12px 12px;
+        background: linear-gradient(transparent, rgba(16, 31, 25, 0.8));
+        opacity: 0;
+        transition: opacity 160ms ease;
+      }
+
+      .movie-card:hover .poster-overlay,
+      .movie-card:focus-within .poster-overlay {
+        opacity: 1;
+      }
+
+      .poster-overlay span {
+        display: inline-flex;
+        color: white;
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .card-body {
+        padding: 10px 2px 4px;
+      }
+
+      .movie-title {
+        margin: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .movie-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 200px));
+        gap: 20px;
+      }
+
+      .score {
+        display: inline-block;
+        margin-top: 8px;
+        color: var(--forest);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .empty-state,
+      .error-state {
+        padding: 20px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--muted);
+      }
+
+      .error-state {
+        color: #a63e2c;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(18, 35, 28, 0.72);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal {
+        width: min(980px, 100%);
+        max-height: 92vh;
+        overflow: auto;
+        background: var(--paper);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 10px;
+        box-shadow: 0 28px 80px rgba(10, 25, 18, 0.35);
+      }
+
+      .modal-hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: 230px 1fr;
+        gap: 28px;
+        padding: 28px;
+        background: linear-gradient(125deg, #e2ebdc, transparent 70%);
+      }
+
+      .modal-poster {
+        width: 100%;
+        border-radius: 9px;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        box-shadow: 0 16px 35px rgba(25, 42, 36, 0.16);
+      }
+
+      .modal-copy {
+        align-self: end;
+        padding-bottom: 12px;
+      }
+
+      .modal-copy h2 {
+        margin: 0;
+        font-family: "DM Serif Display", Georgia, serif;
+        font-size: 48px;
+        font-weight: 400;
+      }
+
+      .modal-copy p {
+        max-width: 650px;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .pill {
+        display: inline-block;
+        margin-right: 8px;
+        padding: 6px 10px;
+        background: var(--lime);
+        border-radius: 999px;
+        color: var(--ink);
+        font-size: 12px;
+      }
+
+      .close-button {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 38px;
+        height: 38px;
+        border: 0;
+        border-radius: 50%;
+        color: white;
+        background: var(--forest);
+        font-size: 23px;
+        line-height: 1;
+      }
+
+      .similar-section {
+        padding: 4px 28px 30px;
+      }
+
+      .similar-section h3 {
+        margin: 14px 0 6px;
+        font-size: 23px;
+      }
+
+      .similar-note {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .loading {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+      }
+
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #c8d2ca;
+        border-top-color: var(--forest);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      footer {
+        padding: 20px 24px 30px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 11px;
+        text-align: center;
+      }
+
+      :focus-visible {
+        outline: 3px solid #4c8267;
+        outline-offset: 3px;
+      }
+
+      @media (max-width: 760px) {
+        .header {
+          padding: 15px 20px;
+        }
+        .header-right {
+          gap: 14px;
+        }
+        .api-status {
+          display: none;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 12px;
+          min-height: 0;
+          padding: 48px 20px 38px;
+        }
+        h1 {
+          max-width: 520px;
+          font-size: 54px;
+        }
+        .hero-art {
+          min-height: 260px;
+          margin: 8px 12px 0;
+        }
+        .feature-poster {
+          right: 24%;
+          width: 48%;
+          height: 250px;
+        }
+        .side-poster {
+          width: 31%;
+          height: 150px;
+        }
+        .art-note {
+          bottom: 0;
+        }
+        main {
+          padding: 0 20px 52px;
+        }
+        .section-header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .movie-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 20px 12px;
+        }
+        .result-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .modal-hero {
+          grid-template-columns: 105px 1fr;
+          gap: 16px;
+          padding: 20px;
+        }
+        .modal-copy h2 {
+          font-size: 30px;
+        }
+        .modal-copy p {
+          font-size: 13px;
+          display: -webkit-box;
+          -webkit-line-clamp: 4;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .similar-section {
+          padding: 0 20px 24px;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .header-link {
+          font-size: 12px;
+        }
+        h1 {
+          font-size: 46px;
+        }
+        .search-box {
+          align-items: stretch;
+          flex-direction: column;
+        }
+        .search-box input {
+          min-height: 46px;
+        }
+        .section-title {
+          font-size: 28px;
+        }
+        .movie-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .modal-backdrop {
+          padding: 10px;
+        }
+        .modal-hero {
+          grid-template-columns: 82px 1fr;
+          gap: 12px;
+          padding: 16px;
+        }
+        .modal-copy h2 {
+          font-size: 25px;
+        }
+        .close-button {
+          top: 10px;
+          right: 10px;
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header class="header">
+      <a class="brand" href="#top" aria-label="Nexora home">
+        <span class="brand-mark" aria-hidden="true">N</span>
+        Nexora
+      </a>
+      <div class="header-right">
+        <a class="header-link" href="#catalog">Browse films</a>
+        <div class="api-status">
+          <span class="status-dot"></span>
+          Meaning search is ready
+        </div>
+      </div>
+    </header>
+
+    <section id="top" class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">A better kind of movie night</p>
+        <h1>Find a film for the feeling.</h1>
+        <p class="hero-copy">
+          Tell us what you’re in the mood for. We’ll look beyond titles and find
+          stories that match the moment.
+        </p>
+
+        <div class="search-box">
+          <input
+            id="semanticQuery"
+            type="text"
+            autocomplete="off"
+            aria-label="Describe the kind of movie you want"
+            placeholder="A clever mystery with an unexpected ending"
+          />
+          <button id="searchButton" class="primary-button" type="button">
+            Find a film
+          </button>
+        </div>
+
+        <div class="example">
+          Try “a story about starting over” or “a tense space survival”.
+        </div>
+      </div>
+      <div class="hero-art" aria-label="A selection of films to explore">
+        <img
+          class="feature-poster"
+          src="https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg"
+          alt="Inception film poster"
+        />
+        <img
+          class="side-poster"
+          src="https://image.tmdb.org/t/p/w500/4GDy0PHYX3VRXUtwK5ysFbg3kEx.jpg"
+          alt="Shutter Island film poster"
+        />
+        <div class="art-note">Stories worth<br />staying up for.</div>
+      </div>
+    </section>
+
+    <main>
+      <section id="searchSection" class="section hidden">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Your matches</h2>
+            <p id="searchSubtitle" class="section-subtitle"></p>
+          </div>
+        </div>
+        <div id="searchResults"></div>
+      </section>
+
+      <section id="catalog" class="section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Pick a starting point</h2>
+            <p class="section-subtitle">
+              Choose a film to discover stories with a similar feel.
+            </p>
+          </div>
+
+          <div class="filters">
+            <button
+              class="filter-button active"
+              type="button"
+              data-filter="All"
+            >
+              All films
+            </button>
+            <button class="filter-button" type="button" data-filter="Hollywood">
+              Hollywood
+            </button>
+            <button class="filter-button" type="button" data-filter="Bollywood">
+              Bollywood
+            </button>
+          </div>
+        </div>
+
+        <div id="movieGrid" class="movie-grid"></div>
+      </section>
+    </main>
+
+    <div id="movieModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-hero">
+          <button
+            id="closeModal"
+            class="close-button"
+            type="button"
+            aria-label="Close"
+          >
+            ×
+          </button>
+          <img id="modalPoster" class="modal-poster" alt="" />
+
+          <div class="modal-copy">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <span id="modalIndustry" class="pill"></span>
+            <span id="modalYear" class="pill"></span>
+          </div>
+        </div>
+
+        <div class="similar-section">
+          <h3 id="similarHeading">Similar movies</h3>
+          <p class="similar-note">
+            Ranked using cosine similarity between the selected movie's stored
+            embedding and every other movie embedding.
+          </p>
+          <div id="similarResults"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Nexora · Thoughtful recommendations for your next movie night.
+    </footer>
+
+    <script>
+      const API_BASE = "/movies";
+
+      const MOVIES = [
+        {
+          title: "Interstellar",
+          description:
+            "A group of astronauts travel through a wormhole searching for a new home for humanity.",
+          year: 2014,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+        },
+        {
+          title: "Gravity",
+          description:
+            "An astronaut stranded in space struggles to survive and return safely to Earth.",
+          year: 2013,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/2gPjLWIyrWlAn2DgKMOKTBnZYyO.jpg",
+        },
+        {
+          title: "The Martian",
+          description:
+            "An astronaut stranded on Mars uses science and ingenuity to survive until rescue.",
+          year: 2015,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/AjbENYG3b8lhYSkdrWwlhVLRPKR.jpg",
+        },
+        {
+          title: "Titanic",
+          description:
+            "Two passengers from different social classes fall in love aboard a doomed ocean liner.",
+          year: 1997,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
+        },
+        {
+          title: "John Wick",
+          description:
+            "A retired assassin returns to the criminal underworld seeking revenge after a personal loss.",
+          year: 2014,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/5vHssUeVe25bMrof1HyaPyWgaP.jpg",
+        },
+        {
+          title: "The Dark Knight",
+          description:
+            "A masked vigilante battles a criminal mastermind who spreads chaos throughout Gotham City.",
+          year: 2008,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+        },
+        {
+          title: "Shutter Island",
+          description:
+            "A detective investigates the disappearance of a patient from an isolated psychiatric hospital and begins questioning reality.",
+          year: 2010,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/4GDy0PHYX3VRXUtwK5ysFbg3kEx.jpg",
+        },
+        {
+          title: "Finding Nemo",
+          description:
+            "A cautious father crosses the ocean searching for his missing son.",
+          year: 2003,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/5lc6nQc0VhWFYFbNv016xze8Jvy.jpg",
+        },
+        {
+          title: "The Pursuit of Happyness",
+          description:
+            "A struggling father faces poverty and homelessness while trying to build a better future for himself and his young son.",
+          year: 2006,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/lBYOKAMcxIvuk9s9hMuecB9dPBV.jpg",
+        },
+        {
+          title: "Toy Story",
+          description:
+            "A group of toys come alive and struggle with friendship, jealousy, identity and being replaced.",
+          year: 1995,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
+        },
+        {
+          title: "Inception",
+          description:
+            "A skilled thief enters people's dreams to steal secrets and is given a mission to plant an idea inside a target's mind.",
+          year: 2010,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+        },
+        {
+          title: "The Shawshank Redemption",
+          description:
+            "A wrongly convicted banker forms a lasting friendship and searches for hope while serving a long prison sentence.",
+          year: 1994,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg",
+        },
+        {
+          title: "Forrest Gump",
+          description:
+            "A kind-hearted man experiences decades of American history while remaining devoted to the woman he has loved since childhood.",
+          year: 1994,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
+        },
+        {
+          title: "The Matrix",
+          description:
+            "A hacker discovers that reality is a simulated world and joins a rebellion against the machines controlling humanity.",
+          year: 1999,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/hEpWvX6Bp79eLxY1kX5ZZJcme5U.jpg",
+        },
+        {
+          title: "Gladiator",
+          description:
+            "A betrayed Roman general becomes a gladiator and fights his way toward revenge against the emperor who destroyed his family.",
+          year: 2000,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
+        },
+        {
+          title: "Avengers: Endgame",
+          description:
+            "The surviving heroes reunite for a final mission to reverse a devastating loss and restore the people who disappeared.",
+          year: 2019,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg",
+        },
+        {
+          title: "Jurassic Park",
+          description:
+            "Scientists and visitors become trapped in a dinosaur theme park after its security systems fail.",
+          year: 1993,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/oU7Oq2kFAAlGqbU4VoAE36g4hoI.jpg",
+        },
+        {
+          title: "The Godfather",
+          description:
+            "The reluctant son of a powerful crime family is drawn into the family's violent world and gradually takes control.",
+          year: 1972,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+        },
+        {
+          title: "Fight Club",
+          description:
+            "A disillusioned office worker and a charismatic stranger create an underground fight club that grows into something dangerous.",
+          year: 1999,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+        },
+        {
+          title: "La La Land",
+          description:
+            "An aspiring actress and a jazz musician fall in love while pursuing ambitious creative careers in Los Angeles.",
+          year: 2016,
+          industry: "Hollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkUJt0Rf0.jpg",
+        },
+        {
+          title: "3 Idiots",
+          description:
+            "Three engineering students navigate academic pressure, friendship and expectations while questioning a rigid education system.",
+          year: 2009,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/66A9MqXOyVFCssoloscw79z8Tew.jpg",
+        },
+        {
+          title: "Dangal",
+          description:
+            "A former wrestler trains his daughters to become competitive wrestlers while challenging social expectations in rural India.",
+          year: 2016,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/cJRPOLEexI7qp2DKtFfCh7YaaUG.jpg",
+        },
+        {
+          title: "Zindagi Na Milegi Dobara",
+          description:
+            "Three friends take a road trip across Spain that forces them to confront fear, relationships and how they want to live.",
+          year: 2011,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/hKO9O715wYxjkQSEv47giCYcyO8.jpg",
+        },
+        {
+          title: "Taare Zameen Par",
+          description:
+            "A misunderstood child struggling with dyslexia finds confidence after a compassionate teacher recognizes his creativity.",
+          year: 2007,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/puHRt6Raovm5ujGCdwLWvRv4NHU.jpg",
+        },
+        {
+          title: "Lagaan",
+          description:
+            "Villagers under colonial rule challenge British officers to a cricket match in hopes of escaping a crushing agricultural tax.",
+          year: 2001,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/yNX9lFRAFeNLNRIXdqZK9gYrYKa.jpg",
+        },
+        {
+          title: "Dilwale Dulhania Le Jayenge",
+          description:
+            "Two young Indians living abroad fall in love, but family tradition and an arranged marriage stand between them.",
+          year: 1995,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/2CAL2433ZeIihfX1Hb2139CX0pW.jpg",
+        },
+        {
+          title: "Gully Boy",
+          description:
+            "A young man from a poor Mumbai neighborhood uses hip-hop and street rap to pursue a life beyond poverty and social limitations.",
+          year: 2019,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/4RE7TD5TqEXbPKyUHcn7CSeMlrJ.jpg",
+        },
+        {
+          title: "Queen",
+          description:
+            "After being abandoned before her wedding, a sheltered young woman travels alone on her planned honeymoon and discovers independence.",
+          year: 2014,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/vKLp0X2RQOuA31R3AdaYtDdKIPK.jpg",
+        },
+        {
+          title: "Bajrangi Bhaijaan",
+          description:
+            "A kind-hearted Indian man crosses borders and overcomes political obstacles to reunite a lost mute Pakistani girl with her family.",
+          year: 2015,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/vhlliI7HZZlWfo5d6CiyfBAGLrW.jpg",
+        },
+        {
+          title: "Andhadhun",
+          description:
+            "A pianist pretending to be blind becomes trapped in a dangerous web of murder, deception and unpredictable consequences.",
+          year: 2018,
+          industry: "Bollywood",
+          poster:
+            "https://image.tmdb.org/t/p/w500/dy3K6hNvwE05siGgiLJcEiwgpdO.jpg",
+        },
+      ];
+
+      const movieGrid = document.getElementById("movieGrid");
+      const semanticQuery = document.getElementById("semanticQuery");
+      const searchButton = document.getElementById("searchButton");
+      const searchSection = document.getElementById("searchSection");
+      const searchSubtitle = document.getElementById("searchSubtitle");
+      const searchResults = document.getElementById("searchResults");
+      const movieModal = document.getElementById("movieModal");
+      const modalPoster = document.getElementById("modalPoster");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalDescription = document.getElementById("modalDescription");
+      const modalIndustry = document.getElementById("modalIndustry");
+      const modalYear = document.getElementById("modalYear");
+      const closeModalButton = document.getElementById("closeModal");
+      const similarHeading = document.getElementById("similarHeading");
+      const similarResults = document.getElementById("similarResults");
+
+      function findLocalMovie(title) {
+        for (let i = 0; i < MOVIES.length; i++) {
+          if (MOVIES[i].title.toLowerCase() === title.toLowerCase()) {
+            return MOVIES[i];
+          }
+        }
+        return null;
+      }
+
+      function createFallbackPoster(title) {
+        const safeTitle = title.replace(/[&<>"']/g, "");
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="750">
+                <defs>
+                    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#2a2a2a"/>
+                        <stop offset="1" stop-color="#080808"/>
+                    </linearGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#g)"/>
+                <text x="50%" y="48%" text-anchor="middle"
+                    fill="#ffffff" font-family="Arial" font-size="30" font-weight="700">
+                    ${safeTitle.substring(0, 22)}
+                </text>
+                <text x="50%" y="55%" text-anchor="middle"
+                    fill="#e50914" font-family="Arial" font-size="20" font-weight="700">
+                    MOVIEMATCH
+                </text>
+            </svg>`;
+        return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+      }
+
+      function attachPosterFallback(image, title) {
+        image.addEventListener(
+          "error",
+          function () {
+            image.src = createFallbackPoster(title);
+          },
+          { once: true },
+        );
+      }
+
+      function createMovieCard(movie, similarity) {
+        const card = document.createElement("article");
+        card.className = "movie-card";
+
+        const posterWrap = document.createElement("div");
+        posterWrap.className = "poster-wrap";
+
+        const image = document.createElement("img");
+        image.className = "poster";
+        image.src = movie.poster;
+        image.alt = movie.title + " poster";
+        image.loading = "lazy";
+        attachPosterFallback(image, movie.title);
+
+        const overlay = document.createElement("div");
+        overlay.className = "poster-overlay";
+        overlay.innerHTML = "<span>▶ Find similar movies</span>";
+
+        posterWrap.appendChild(image);
+        posterWrap.appendChild(overlay);
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+
+        const title = document.createElement("h3");
+        title.className = "movie-title";
+        title.textContent = movie.title;
+
+        const meta = document.createElement("div");
+        meta.className = "movie-meta";
+
+        const left = document.createElement("span");
+        left.textContent = movie.year;
+
+        const right = document.createElement("span");
+        right.textContent = movie.industry;
+
+        meta.appendChild(left);
+        meta.appendChild(right);
+
+        body.appendChild(title);
+        body.appendChild(meta);
+
+        if (similarity !== undefined && similarity !== null) {
+          const score = document.createElement("div");
+          score.className = "score";
+          score.textContent =
+            "Cosine similarity: " + Number(similarity).toFixed(3);
+          body.appendChild(score);
+        }
+
+        card.appendChild(posterWrap);
+        card.appendChild(body);
+
+        card.addEventListener("click", function () {
+          openMovie(movie);
+        });
+
+        return card;
+      }
+
+      function renderCatalog(filter) {
+        movieGrid.innerHTML = "";
+
+        for (let i = 0; i < MOVIES.length; i++) {
+          const movie = MOVIES[i];
+
+          if (filter !== "All" && movie.industry !== filter) {
+            continue;
+          }
+
+          movieGrid.appendChild(createMovieCard(movie));
+        }
+      }
+
+      async function semanticSearch() {
+        const query = semanticQuery.value.trim();
+
+        if (!query) {
+          semanticQuery.focus();
+          return;
+        }
+
+        searchSection.classList.remove("hidden");
+        searchSubtitle.textContent =
+          'Searching by meaning for: "' + query + '"';
+        searchResults.innerHTML =
+          '<div class="loading"><span class="spinner"></span>' +
+          "Creating query embedding and comparing vectors...</div>";
+
+        searchSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        try {
+          const response = await fetch(
+            API_BASE + "/search?query=" + encodeURIComponent(query),
+          );
+
+          if (!response.ok) {
+            throw new Error("Backend returned HTTP " + response.status);
+          }
+
+          const matches = await response.json();
+          renderMatches(matches, searchResults);
+        } catch (error) {
+          searchResults.innerHTML =
+            '<div class="error-state">' +
+            "Could not call the Spring Boot API. Make sure the backend is running " +
+            "and this page is being served by the same application.<br><br>" +
+            error.message +
+            "</div>";
+        }
+      }
+
+      function renderMatches(matches, container) {
+        container.innerHTML = "";
+
+        if (!matches || matches.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state">No matching movies returned.</div>';
+          return;
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "result-grid";
+
+        for (let i = 0; i < matches.length; i++) {
+          const match = matches[i];
+          const movie = findLocalMovie(match.title);
+
+          if (!movie) {
+            continue;
+          }
+
+          grid.appendChild(createMovieCard(movie, match.similarity));
+        }
+
+        container.appendChild(grid);
+      }
+
+      async function openMovie(movie) {
+        modalPoster.src = movie.poster;
+        modalPoster.alt = movie.title + " poster";
+        attachPosterFallback(modalPoster, movie.title);
+
+        modalTitle.textContent = movie.title;
+        modalDescription.textContent = movie.description;
+        modalIndustry.textContent = movie.industry;
+        modalYear.textContent = movie.year;
+
+        similarHeading.textContent = "Because you picked " + movie.title;
+
+        similarResults.innerHTML =
+          '<div class="loading"><span class="spinner"></span>' +
+          "Comparing this movie with stored vectors...</div>";
+
+        movieModal.classList.remove("hidden");
+        movieModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+
+        try {
+          const response = await fetch(
+            API_BASE + "/" + encodeURIComponent(movie.title) + "/similar",
+          );
+
+          if (!response.ok) {
+            throw new Error("Backend returned HTTP " + response.status);
+          }
+
+          const matches = await response.json();
+          renderMatches(matches, similarResults);
+        } catch (error) {
+          similarResults.innerHTML =
+            '<div class="error-state">Could not load similar movies.<br><br>' +
+            error.message +
+            "</div>";
+        }
+      }
+
+      function closeMovie() {
+        movieModal.classList.add("hidden");
+        movieModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      searchButton.addEventListener("click", semanticSearch);
+
+      semanticQuery.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          semanticSearch();
+        }
+      });
+
+      closeModalButton.addEventListener("click", closeMovie);
+
+      movieModal.addEventListener("click", function (event) {
+        if (event.target === movieModal) {
+          closeMovie();
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (
+          event.key === "Escape" &&
+          !movieModal.classList.contains("hidden")
+        ) {
+          closeMovie();
+        }
+      });
+
+      const filterButtons = document.querySelectorAll(".filter-button");
+
+      for (let i = 0; i < filterButtons.length; i++) {
+        filterButtons[i].addEventListener("click", function () {
+          for (let j = 0; j < filterButtons.length; j++) {
+            filterButtons[j].classList.remove("active");
+          }
+
+          this.classList.add("active");
+          renderCatalog(this.dataset.filter);
+        });
+      }
+
+      renderCatalog("All");
+    </script>
+  </body>
+</html>
